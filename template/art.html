@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+    <link rel="stylesheet" href="/template/artStyle1.css">
+    <link rel="stylesheet" type="text/css" href="https://js.api.here.com/v3/3.1/mapsjs-ui.css" />
+   
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+    <title>Artist</title>
+</head>
+
+<body>
+    <div class="container">
+
+       
+        <h1>{{.Name}}</h1>
+        <img src="{{.Image}}" alt="">
+        <h2>Members</h2>
+        <div class="mem">
+
+
+            {{range .Members}}
+            <div class="item">
+
+                <p>{{.}}</p>
+
+            </div>
+            {{end}}
+        </div>
+
+
+        <div class="FirstAlbum">
+            <h2>First Album</h2>
+            <p>{{ .FirstAlbum }}</p>
+        </div>
+
+        <h2>Creation Date</h2>
+        <div class=CreationDate>
+            <p>{{ .CreationDate}}</p>
+        </div>
+
+    </div>
+  
+
+    <div class="Relate">
+
+        <h2>Relations</h2>
+        {{range $key, $val := .RelationData.DatesLocations}}
+        <div class="cities">{{$key}}</div>
+        <!-- var adr = $key -->
+     
+
+        {{range $val}}
+
+        <p class = "dates">{{.}}</p>
+
+        {{end}}<br />
+        {{end}}
+        <div  style="height: 400px; margin: 0; width: 80%;" id="map"></div>
+
+    </div>
+
+
+    <script >
+        
+      var platform = new H.service.Platform({
+        apikey: "3AFfVpg3Do8DpOQ-lW7dRarElSXxsvt3mz4nZ1rrfU0"
+      });
+      var defaultLayers = platform.createDefaultLayers();
+
+        var map = new H.Map(
+        document.getElementById('map'),
+         defaultLayers.vector.normal.map, {
+        center: { lat: 20, lng: 10 },
+        zoom: 0,
+        pixelRatio: window.devicePixelRatio || 1
+    });
+
+    
+window.addEventListener('resize', () => map.getViewPort().resize());
+
+
+var behavior = new H.mapevents.Behavior(new H.mapevents.MapEvents(map));
+
+
+var ui = H.ui.UI.createDefault(map, defaultLayers);
+
+
+// window.onload = function () {
+//     let locations = document.getElementsByClassName('cities');
+//     for (let i = 0; i < locations.length; i++) {
+//         fetch('https://geocoder.ls.hereapi.com/6.2/geocode.json?searchtext=' + locations[i].textContent + '&gen=9&apiKey=3AFfVpg3Do8DpOQ-lW7dRarElSXxsvt3mz4nZ1rrfU0')
+//             .then(response => response.json())
+//             .then(data => {
+//                 map.addObject(new H.map.Marker({
+//                     lat: data.Response.View[0].Result[0].Location.DisplayPosition.Latitude,
+//                     lng: data.Response.View[0].Result[0].Location.DisplayPosition.Longitude
+//                 }));
+               
+//             })
+
+//     }
+
+// }
+
+
+var marker = new H.map.Marker({ lat : 0, lng : 0 })
+window.onload = function () {
+    let locations = document.getElementsByClassName('cities');
+    for (let i = 0; i < locations.length; i++) {
+        fetch('https://geocoder.ls.hereapi.com/6.2/geocode.json?searchtext=' + locations[i].textContent + '&gen=9&apiKey=3AFfVpg3Do8DpOQ-lW7dRarElSXxsvt3mz4nZ1rrfU0')
+            .then(response => response.json())
+            .then(data => {
+                marker = new H.map.Marker({
+                    lat: data.Response.View[0].Result[0].Location.DisplayPosition.Latitude,
+                    lng: data.Response.View[0].Result[0].Location.DisplayPosition.Longitude
+                })
+
+                marker.setData(locations[i].textContent);
+                marker.addEventListener("tap", event => {
+                    var bubble = new H.ui.InfoBubble(
+                        event.target.getGeometry(),
+                        {
+                            content: event.target.getData()
+                        }
+                    );
+                    ui.addBubble(bubble);
+                }, false);
+               
+                map.addObjects([marker]);
+            })
+           
+
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+    </script>
+
+   
+
+    
+   
+
+
+
+
+</body>
+
+</html>

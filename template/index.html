@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>GopnikTracker</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/template/style.css">
+</head>
+
+<body>
+    <div class="equalizer">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+
+    </div>
+
+    <h1>Gopnik<span>Tracker</span></h1>
+    <div class="search">
+        <form method="POST" action="/oshibka">
+            <input list="something" type="text" name="artist" type="submit" placeholder="Enter name of the artist">
+            <input class="button" type="submit" value="GOGO">
+            <datalist id="something">
+                {{range .}}
+                <option value="{{.Name}}"></option>
+
+                <option value="{{.CreationDate}}"></option>
+                <option value="{{.FirstAlbum}}"></option>
+                {{range .Members}}
+                <option value="{{.}}"></option>
+                {{end}}
+                {{range .Location.Locations}}
+                <option value="{{.}}"></option>
+                {{end}}
+                {{end}}
+            </datalist>
+        </form>
+    </div>
+
+
+    <div class="container">
+        {{range .}}
+        <div class="item">
+            <img src="{{.Image}}" alt="">
+            <form method="POST" action="/art">
+
+                <input class="btn" type="submit" name="username" value="{{.Name}}">
+
+            </form>
+        </div>
+        {{end}}
+    </div>
+
+</body>
+
+
+<footer></footer>
+
+</html>
